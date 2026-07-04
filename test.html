@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bình Hoa Hồng Nhung Trong Suốt - Slow Magic</title>
+    <style>
+        /* Nền đen toàn màn hình */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Canvas hiệu ứng hạt ma thuật */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Khung chứa toàn bộ bình hoa */
+        .vase-container {
+            position: relative;
+            width: 380px; 
+            height: 520px;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: bottom;
+        }
+
+        /* Hiệu ứng đung đưa siêu nhẹ, chậm rãi như gió thoảng */
+        .vase-svg {
+            width: 100%;
+            height: 100%;
+            transform-origin: bottom center;
+            animation: gentleSway 12s ease-in-out infinite alternate;
+            /* Tạo hào quang dịu nhẹ quanh bình hoa */
+            filter: drop-shadow(0 0 20px rgba(255, 51, 75, 0.25));
+        }
+
+        @keyframes gentleSway {
+            0% { transform: rotate(-1deg); }
+            100% { transform: rotate(1deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas vẽ hiệu ứng tiên hiệp lơ lửng -->
+    <canvas id="magicCanvas"></canvas>
+
+    <!-- Toàn bộ bình hoa dựng hoàn toàn bằng Vector SVG tinh tế -->
+    <div class="vase-container">
+        <svg class="vase-svg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Đổ bóng 3D phân tầng cho cánh hoa hồng -->
+                <filter id="petalShadow" x="-10%" y="-10%" width="120%" height="120%">
+                    <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.5"/>
+                </filter>
+
+                <!-- Gradient màu cho cánh hoa nhung -->
+                <linearGradient id="roseRed" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#ff2647"/>
+                    <stop offset="60%" stop-color="#cc001b"/>
+                    <stop offset="100%" stop-color="#59000a"/>
+                </linearGradient>
+
+                <linearGradient id="roseLight" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="#e6001e"/>
+                    <stop offset="70%" stop-color="#ff4d66"/>
+                    <stop offset="100%" stop-color="#990012"/>
+                </linearGradient>
+
+                <!-- Gradient màu xanh cho cành và lá hoa -->
+                <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#3a5f25"/>
+                    <stop offset="50%" stop-color="#558b2f"/>
+                    <stop offset="100%" stop-color="#2e4c1c"/>
+                </linearGradient>
+
+                <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#64dd17"/>
+                    <stop offset="50%" stop-color="#33691e"/>
+                    <stop offset="100%" stop-color="#1b5e20"/>
+                </linearGradient>
+
+                <!-- Gradient tạo chất liệu thủy tinh trong suốt ánh xanh lam tinh khôi -->
+                <linearGradient id="glassBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)"/>
+                    <stop offset="15%" stop-color="rgba(220, 240, 255, 0.15)"/>
+                    <stop offset="50%" stop-color="rgba(220, 240, 255, 0.03)"/>
+                    <stop offset="85%" stop-color="rgba(220, 240, 255, 0.15)"/>
+                    <stop offset="100%" stop-color="rgba(255, 255, 255, 0.45)"/>
+                </linearGradient>
+                
+                <linearGradient id="glassReflect" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.6)"/>
+                    <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                </linearGradient>
+            </defs>
+
+            <!-- ================= PHẦN 1: CÀNH VÀ LÁ (NẰM PHÍA DƯỚI BÔNG HOA VÀ ĐI VÀO TRONG BÌNH) ================= -->
+            <g id="stems-and-leaves">
+                <!-- Cành chính chạy dọc từ trên xuống đáy bình -->
+                <path d="M100,80 Q96,150 102,210 T98,285" fill="none" stroke="url(#stemGrad)" stroke-width="4.5" stroke-linecap="round"/>
+                
+                <!-- Nhánh lá số 1 (Bên trái - phía trên cổ bình) -->
+                <path d="M98,105 Q70,100 55,115 C65,130 85,125 98,112" fill="url(#leafGrad)"/>
+                <path d="M98,105 Q70,100 55,115" fill="none" stroke="#1b5e20" stroke-width="1"/>
+                
+                <!-- Nhánh lá số 2 (Bên phải - sát miệng bình) -->
+                <path d="M100,125 Q130,115 145,135 C130,150 110,145 100,132" fill="url(#leafGrad)"/>
+                <path d="M100,125 Q130,115 145,135" fill="none" stroke="#1b5e20" stroke-width="1"/>
+
+                <!-- Nhánh lá số 3 (Nằm hoàn toàn PHÍA TRONG bình thủy tinh, làm mờ nhẹ bằng opacity) -->
+                <g opacity="0.75">
+                    <path d="M99,160 Q75,170 65,195 C80,205 95,190 100,178" fill="url(#leafGrad)"/>
+                    <path d="M99,160 Q120,175 130,200 C115,210 105,195 100,182" fill="url(#leafGrad)"/>
+                </g>
+            </g>
+
+            <!-- ================= PHẦN 2: ĐÓA HOA HỒNG NHUNG (ĐỒNG TÂM GÓC CHẾCH 3D) ================= -->
+            <g id="blooming-rose" transform="translate(0, -5)">
+                <!-- Các lớp cánh ngoài xòe rộng nâng đỡ -->
+                <path d="M100,85 C50,85 35,55 35,35 C35,10 70,0 100,20 C130,0 165,10 165,35 C165,55 150,85 100,85 Z" fill="#4a0005" />
+                <path d="M40,35 C25,55 55,80 100,80 C145,80 175,55 160,35 C145,55 55,55 40,35 Z" fill="url(#roseRed)" filter="url(#petalShadow)"/>
+                
+                <!-- Các cánh lớp giữa xếp xen kẽ so le tạo độ dày đặc -->
+                <path d="M55,32 C45,15 70,5 100,22 C130,5 155,15 145,32 C130,50 70,50 55,32 Z" fill="url(#roseLight)" filter="url(#petalShadow)"/>
+                <path d="M50,38 C40,55 65,72 100,72 C135,72 160,55 150,38 C135,55 65,55 50,38 Z" fill="url(#roseRed)" filter="url(#petalShadow)"/>
+                
+                <!-- Lõi nụ cuộn tròn khít khao ở trung tâm -->
+                <path d="M72,30 C68,18 88,12 100,24 C112,12 132,18 128,30 C120,42 80,42 72,30 Z" fill="url(#roseLight)" filter="url(#petalShadow)"/>
+                <path d="M82,28 C82,20 90,16 100,20 C110,16 118,20 118,28 C114,35 86,35 82,28 Z" fill="#990012"/>
+                
+                <!-- Tâm xoáy chữ S sâu thẳm -->
+                <path d="M90,26 C90,22 96,19 100,21 C104,19 110,22 110,26 C108,30 92,30 90,26 Z" fill="#ff4d66"/>
+                <circle cx="100" cy="24" r="2.5" fill="#ffffff" opacity="0.6"/>
+            </g>
+
+            <!-- ================= PHẦN 3: BÌNH THỦY TINH TRONG SUỐT (ĐÈ LÊN TRÊN CÀNH HOA) ================= -->
+            <!-- Sử dụng kết hợp Opacity và Gradient để tạo cảm giác khúc xạ trong suốt xuyên thấu cành lá bên trong -->
+            <g id="transparent-glass-vase">
+                <!-- Miệng bình hoa (Hình elip nằm ngang) -->
+                <ellipse cx="100" cy="140" rx="16" ry="5" fill="none" stroke="rgba(255, 255, 255, 0.5)" stroke-width="1.5"/>
+                <ellipse cx="100" cy="140" rx="14" ry="4.5" fill="rgba(220, 240, 255, 0.1)"/>
+
+                <!-- Cổ bình bóp nhỏ và Thân bình phình to dạng giọt nước sang trọng -->
+                <!-- Khối chất lỏng/nước phía trong đáy bình -->
+                <path d="M90,140 L90,160 C80,180 65,210 65,250 C65,280 80,290 100,290 C120,290 135,280 135,250 C135,210 120,180 110,160 L110,140 Z" 
+                      fill="url(#glassBody)" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" stroke-linejoin="round"/>
+                
+                <!-- Mực nước trong bình (giúp cành hoa trông thật hơn) -->
+                <path d="M70,220 C80,225 120,225 130,220 C134,235 135,250 135,250 C135,280 120,290 100,290 C80,290 65,280 65,250 C65,250 66,235 70,220 Z" 
+                      fill="rgba(0, 191, 255, 0.04)" />
+                <path d="M70,220 C85,217 115,217 130,220" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+
+                <!-- Đường vệt sáng phản chiếu trên thành thủy tinh (Glass Reflection highlights) -->
+                <path d="M72,210 C68,230 68,255 74,275" fill="none" stroke="url(#glassReflect)" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+                <path d="M128,210 C132,230 132,255 126,275" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+                <ellipse cx="100" cy="287" rx="22" ry="3" fill="rgba(255, 255, 255, 0.15)"/>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('magicCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = [];
+        const particleCount = 70; 
+
+        class VaseMagicParticle {
+            constructor() {
+                this.reset();
+                // Phân bổ ngẫu nhiên hạt ngay từ đầu
+                this.y = Math.random() * canvas.height;
+            }
+
+            reset() {
+                // Hạt xuất phát từ khu vực bình hoa ở giữa màn hình
+                this.x = canvas.width / 2 + (Math.random() - 0.5) * 60;
+                this.y = canvas.height / 2 + 120; // Xuất phát từ vùng thân bình đi lên
+                
+                // Tốc độ bay lên siêu chậm rãi, thong thả
+                this.speedY = -(Math.random() * 0.4 + 0.15);
+                // Độ uốn lượn dập dềnh sang hai bên trái phải
+                this.speedX = (Math.random() - 0.5) * 0.25;
+                this.amplitude = Math.random() * 0.8 + 0.2;
+                this.waveSpeed = Math.random() * 0.02 + 0.01;
+                this.angle = Math.random() * Math.PI;
+
+                this.size = Math.random() * 1.8 + 0.6;
+                
+                // Tông màu hồng ngọc nhung phát sáng neon kết hợp hạt ánh xanh nước biển nhạt của bình thủy tinh
+                const colors = ['#ff1a40', '#ff4d6d', '#ff0033', '#e60021', '#b3e5fc'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                this.alpha = 1;
+                this.fadeSpeed = Math.random() * 0.0018 + 0.0007;
+
+                this.history = [];
+                this.maxHistory = Math.floor(Math.random() * 20 + 25);
+            }
+
+            update() {
+                this.history.push({x: this.x, y: this.y});
+                if (this.history.length > this.maxHistory) {
+                    this.history.shift();
+                }
+
+                this.y += this.speedY;
+                this.angle += this.waveSpeed;
+                this.x += this.speedX + Math.sin(this.angle) * this.amplitude;
+
+                this.alpha -= this.fadeSpeed;
+
+                if (this.alpha <= 0 || this.y < 0) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                // 1. Vẽ dải vệt sáng mượt mà uốn lượn bốc lên
+                if (this.history.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.history[0].x, this.history[0].y);
+                    for (let i = 1; i < this.history.length; i++) {
+                        ctx.lineTo(this.history[i].x, this.history[i].y);
+                    }
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = this.size * 0.6;
+                    ctx.globalAlpha = this.alpha * 0.18;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                }
+
+                // 2. Điểm sáng tinh linh lấp lánh dẫn đầu có hiệu ứng phát sáng (Glow)
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new VaseMagicParticle());
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
